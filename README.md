@@ -2,6 +2,8 @@
 
 Find available parking spots in a lot using computer vision, then guide drivers to an open space with pathfinding on an interactive map.
 
+> [SmartPark Ideaboard](https://www.tldraw.com/f/RLgCVKEbHXMaHdycuMuwp?d=v337.-8.1762.1186.page)
+
 ## Overview
 
 SMART_PARK combines overhead (or elevated) camera imagery of a parking lot with object detection and graph-based routing. The pipeline:
