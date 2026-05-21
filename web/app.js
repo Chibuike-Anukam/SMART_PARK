@@ -21,6 +21,7 @@ const STATUS_COLORS = {
 
 const NODE_COLORS = {
   spot: "#f8fafc",
+  occupied: "#ef4444",
   perimeter: "#facc15",
   vehicle: "#3b82f6",
   junction: "#a78bfa",
@@ -120,6 +121,8 @@ function findSpotNodeAt(px, py, scale) {
   const hitRadius = 16 / scale;
   for (const node of lotData.nodes) {
     if (node.kind !== "spot") continue;
+    const spot = spotForNode(node.id);
+    if (spot?.status === "occupied") continue;
     if (Math.hypot(px - node.x, py - node.y) <= hitRadius) return node.id;
   }
   return null;
@@ -324,18 +327,27 @@ function draw() {
 
     if (node.kind !== "spot") continue;
 
+    const spot = spotForNode(node.id);
+    const isOccupied = spot?.status === "occupied";
     const isSelected = node.id === selectedSpotNodeId;
     const highlight = routeHighlight(node.id);
     ctx.beginPath();
     ctx.arc(node.x, node.y, isSelected ? 9 : 7, 0, Math.PI * 2);
-    ctx.fillStyle =
-      highlight === "green"
-        ? "#22c55e"
-        : highlight === "orange"
-          ? "#f97316"
-          : NODE_COLORS.spot;
+    if (isOccupied) {
+      ctx.fillStyle = NODE_COLORS.occupied;
+    } else if (highlight === "green") {
+      ctx.fillStyle = "#22c55e";
+    } else if (highlight === "orange") {
+      ctx.fillStyle = "#f97316";
+    } else {
+      ctx.fillStyle = NODE_COLORS.spot;
+    }
     ctx.fill();
-    ctx.strokeStyle = isSelected ? "#3b82f6" : "rgba(15, 23, 42, 0.85)";
+    ctx.strokeStyle = isSelected
+      ? "#3b82f6"
+      : isOccupied
+        ? "#991b1b"
+        : "rgba(15, 23, 42, 0.85)";
     ctx.lineWidth = isSelected ? 3 : 1.5;
     ctx.stroke();
   }
@@ -438,15 +450,6 @@ function handleSpotClick(spotId) {
   selectedSpotNodeId = spotId;
   const spot = spotForNode(spotId);
   if (!spot) return;
-
-  if (spot.status === "occupied") {
-    routePath = [];
-    updateRouteInfo(
-      `Spot <strong>${spotLabel(spot)}</strong> is <strong>occupied</strong>. Choose a free or accessible stall.`
-    );
-    draw();
-    return;
-  }
 
   if (!vehicleAnchorId) {
     routePath = [];
