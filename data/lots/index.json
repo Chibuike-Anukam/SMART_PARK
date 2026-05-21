@@ -5,8 +5,8 @@
       "image": "tempImages/parking-lot-1.png",
       "summary": {
         "total_spots": 12,
-        "free": 4,
-        "occupied": 8
+        "free": 6,
+        "occupied": 6
       },
       "dataUrl": "data/lots/parking-lot-1.json"
     },
@@ -14,9 +14,9 @@
       "id": "parking-lot-2",
       "image": "tempImages/parking-lot-2.png",
       "summary": {
-        "total_spots": 39,
-        "free": 33,
-        "occupied": 6
+        "total_spots": 15,
+        "free": 6,
+        "occupied": 9
       },
       "dataUrl": "data/lots/parking-lot-2.json"
     },
@@ -24,8 +24,8 @@
       "id": "parking-lot-3",
       "image": "tempImages/parking-lot-3.png",
       "summary": {
-        "total_spots": 12,
-        "free": 6,
+        "total_spots": 10,
+        "free": 4,
         "occupied": 6
       },
       "dataUrl": "data/lots/parking-lot-3.json"
