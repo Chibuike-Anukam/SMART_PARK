@@ -6,8 +6,8 @@
   "layout": "2x6",
   "summary": {
     "total_spots": 12,
-    "free": 6,
-    "occupied": 6
+    "free": 4,
+    "occupied": 8
   },
   "spots": [
     {
@@ -40,8 +40,8 @@
       "y": 126.0,
       "w": 83.5,
       "h": 138.0,
-      "status": "accessible",
-      "confidence": 0.95
+      "status": "occupied",
+      "confidence": 0.6917271407837445
     },
     {
       "id": "parking-lot-1_r0_c3",
@@ -73,8 +73,8 @@
       "y": 126.0,
       "w": 83.5,
       "h": 138.0,
-      "status": "accessible",
-      "confidence": 0.95
+      "status": "occupied",
+      "confidence": 0.6894752358490566
     },
     {
       "id": "parking-lot-1_r1_c0",

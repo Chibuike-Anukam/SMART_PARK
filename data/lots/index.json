@@ -5,8 +5,8 @@
       "image": "tempImages/parking-lot-1.png",
       "summary": {
         "total_spots": 12,
-        "free": 6,
-        "occupied": 6
+        "free": 4,
+        "occupied": 8
       },
       "dataUrl": "data/lots/parking-lot-1.json"
     },

@@ -7,6 +7,7 @@ const routeInfo = document.getElementById("routeInfo");
 let lotData = null;
 let bgImage = null;
 let selectedSpotNodeId = null;
+let vehicleAnchorId = null;
 let routePath = [];
 let defaultRoutePath = [];
 let defaultRouteTargetId = null;
@@ -22,9 +23,10 @@ const NODE_COLORS = {
   spot: "#f8fafc",
   perimeter: "#facc15",
   vehicle: "#3b82f6",
-  entrance: "#3b82f6",
   junction: "#a78bfa",
 };
+
+const ROAD_KINDS = new Set(["perimeter", "aisle", "junction"]);
 
 function dist(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -88,15 +90,6 @@ function astar(startId, goalId, nodes, edges) {
   return null;
 }
 
-function vehicleNodeId() {
-  if (!lotData) return null;
-  if (lotData.vehicle_id) return lotData.vehicle_id;
-  const vehicle = lotData.nodes.find(
-    (n) => n.kind === "vehicle" || n.kind === "entrance"
-  );
-  return vehicle?.id ?? null;
-}
-
 function pathLength(path, nodeMap) {
   let length = 0;
   for (let i = 1; i < path.length; i++) {
@@ -105,11 +98,37 @@ function pathLength(path, nodeMap) {
   return length;
 }
 
+function initialVehicleAnchorId() {
+  const vehicleId = lotData.vehicle_id || "vehicle";
+  for (const [from, to] of lotData.edges) {
+    if (from === vehicleId && ROAD_KINDS.has(nodeKind(to))) return to;
+    if (to === vehicleId && ROAD_KINDS.has(nodeKind(from))) return from;
+  }
+  const road = lotData.nodes.find((n) => ROAD_KINDS.has(n.kind));
+  return road?.id ?? null;
+}
+
+function nodeKind(id) {
+  return lotData.nodes.find((n) => n.id === id)?.kind;
+}
+
+function vehicleAnchorNode() {
+  return lotData.nodes.find((n) => n.id === vehicleAnchorId) ?? null;
+}
+
 function findSpotNodeAt(px, py, scale) {
-  if (!lotData) return null;
   const hitRadius = 16 / scale;
   for (const node of lotData.nodes) {
     if (node.kind !== "spot") continue;
+    if (Math.hypot(px - node.x, py - node.y) <= hitRadius) return node.id;
+  }
+  return null;
+}
+
+function findRoadNodeAt(px, py, scale) {
+  const hitRadius = 14 / scale;
+  for (const node of lotData.nodes) {
+    if (!ROAD_KINDS.has(node.kind)) continue;
     if (Math.hypot(px - node.x, py - node.y) <= hitRadius) return node.id;
   }
   return null;
@@ -132,8 +151,7 @@ function freeSpotNodeIds() {
 }
 
 function computeNearestFreeRoute() {
-  const startId = vehicleNodeId();
-  if (!startId || !lotData) {
+  if (!vehicleAnchorId || !lotData) {
     return { path: [], targetId: null, length: 0 };
   }
 
@@ -141,7 +159,7 @@ function computeNearestFreeRoute() {
   let best = null;
 
   for (const targetId of freeSpotNodeIds()) {
-    const path = astar(startId, targetId, lotData.nodes, lotData.edges);
+    const path = astar(vehicleAnchorId, targetId, lotData.nodes, lotData.edges);
     if (!path) continue;
     const length = pathLength(path, nodeMap);
     if (!best || length < best.length) {
@@ -150,6 +168,50 @@ function computeNearestFreeRoute() {
   }
 
   return best ?? { path: [], targetId: null, length: 0 };
+}
+
+function refreshDefaultRoute() {
+  const nearest = computeNearestFreeRoute();
+  defaultRoutePath = nearest.path;
+  defaultRouteTargetId = nearest.targetId;
+}
+
+function refreshGreenRoute() {
+  if (!selectedSpotNodeId || !vehicleAnchorId) {
+    routePath = [];
+    return null;
+  }
+  const spot = spotForNode(selectedSpotNodeId);
+  if (!spot || spot.status === "occupied") {
+    routePath = [];
+    return null;
+  }
+  const path = astar(selectedSpotNodeId, vehicleAnchorId, lotData.nodes, lotData.edges);
+  routePath = path ?? [];
+  return spot;
+}
+
+function updateRouteInfo(extra = "") {
+  const defaultSpot = defaultRouteTargetId
+    ? spotForNode(defaultRouteTargetId)
+    : null;
+  const defaultHint = defaultSpot
+    ? `Orange: vehicle → nearest free at <strong>${spotLabel(defaultSpot)}</strong>. `
+    : "No free spots available. ";
+
+  if (!extra && selectedSpotNodeId) {
+    const spot = spotForNode(selectedSpotNodeId);
+    if (spot?.status === "occupied") {
+      extra = `Spot <strong>${spotLabel(spot)}</strong> is <strong>occupied</strong>.`;
+    } else if (spot && routePath.length > 1) {
+      const nodeMap = new Map(lotData.nodes.map((n) => [n.id, n]));
+      const length = pathLength(routePath, nodeMap);
+      extra = `Green: <strong>${spotLabel(spot)}</strong> → vehicle (${routePath.length} nodes, ~${Math.round(length)} px).`;
+    }
+  }
+
+  routeInfo.innerHTML =
+    `${defaultHint}${extra || "Click a <strong>road node</strong> to move the vehicle. Click a <strong>spot node</strong> for a green path to the vehicle."}`;
 }
 
 function drawRouteLine(path, color, shadowColor) {
@@ -212,6 +274,7 @@ function draw() {
     const b = nodeMap.get(to);
     if (!a || !b) continue;
     if (isSpot(from) && isSpot(to)) continue;
+    if (from === "vehicle" || to === "vehicle") continue;
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -235,28 +298,27 @@ function draw() {
   drawRouteLine(routePath, "#22c55e", "#16a34a");
 
   for (const node of lotData.nodes) {
-    if (node.kind === "perimeter") {
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(250, 204, 21, 0.85)";
-      ctx.fill();
-      continue;
-    }
+    if (node.kind === "vehicle" || node.kind === "entrance") continue;
 
-    if (node.kind === "vehicle" || node.kind === "entrance") {
-      const highlight = routeHighlight(node.id);
+    if (ROAD_KINDS.has(node.kind)) {
+      const isAnchor = node.id === vehicleAnchorId;
+      const highlight = isAnchor ? null : routeHighlight(node.id);
+      const roadR = 7;
       ctx.beginPath();
-      ctx.arc(node.x, node.y, 10, 0, Math.PI * 2);
-      ctx.fillStyle =
-        highlight === "green"
-          ? "#22c55e"
-          : highlight === "orange"
-            ? "#f97316"
-            : NODE_COLORS.vehicle;
+      ctx.arc(node.x, node.y, roadR, 0, Math.PI * 2);
+      if (highlight === "green") ctx.fillStyle = "#22c55e";
+      else if (highlight === "orange") ctx.fillStyle = "#f97316";
+      else ctx.fillStyle = "rgba(250, 204, 21, 0.9)";
       ctx.fill();
-      ctx.strokeStyle = "#1e3a8a";
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      if (isAnchor) {
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        ctx.strokeStyle = "rgba(15, 23, 42, 0.85)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
       continue;
     }
 
@@ -277,6 +339,17 @@ function draw() {
     ctx.lineWidth = isSelected ? 3 : 1.5;
     ctx.stroke();
   }
+
+  const anchor = vehicleAnchorNode();
+  if (anchor) {
+    ctx.beginPath();
+    ctx.arc(anchor.x, anchor.y, 11, 0, Math.PI * 2);
+    ctx.fillStyle = NODE_COLORS.vehicle;
+    ctx.fill();
+    ctx.strokeStyle = "#1e3a8a";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  }
 }
 
 async function loadLot(lotId) {
@@ -285,10 +358,9 @@ async function loadLot(lotId) {
   );
   selectedSpotNodeId = null;
   routePath = [];
+  vehicleAnchorId = initialVehicleAnchorId();
 
-  const nearest = computeNearestFreeRoute();
-  defaultRoutePath = nearest.path;
-  defaultRouteTargetId = nearest.targetId;
+  refreshDefaultRoute();
 
   bgImage = await new Promise((resolve, reject) => {
     const img = new Image();
@@ -299,16 +371,7 @@ async function loadLot(lotId) {
 
   const { free, occupied, total_spots } = lotData.summary;
   summaryEl.textContent = `${total_spots} spots · ${free} free · ${occupied} occupied`;
-  const defaultSpot = defaultRouteTargetId
-    ? spotForNode(defaultRouteTargetId)
-    : null;
-  const defaultHint = defaultSpot
-    ? `Orange path: nearest free spot at <strong>${spotLabel(defaultSpot)}</strong>. `
-    : "No free spots available. ";
-
-  routeInfo.innerHTML =
-    `${defaultHint}Click a <strong>spot node</strong> for a green route from the <strong>blue vehicle</strong>. Occupied spots show a message only.`;
-
+  updateRouteInfo();
   draw();
 }
 
@@ -334,42 +397,78 @@ canvas.addEventListener("click", (e) => {
   const y = (e.clientY - rect.top) * scaleY;
   const scale = Math.max(scaleX, scaleY);
 
-  const nodeId = findSpotNodeAt(x, y, scale);
-  if (!nodeId) return;
+  const spotId = findSpotNodeAt(x, y, scale);
+  const roadId = findRoadNodeAt(x, y, scale);
 
-  selectedSpotNodeId = nodeId;
-  const spot = spotForNode(nodeId);
+  if (spotId) {
+    handleSpotClick(spotId);
+    return;
+  }
+
+  if (roadId) {
+    vehicleAnchorId = roadId;
+    refreshDefaultRoute();
+    if (selectedSpotNodeId) {
+      const spot = refreshGreenRoute();
+      if (spot) updateRouteInfo();
+      else if (spotForNode(selectedSpotNodeId)?.status === "occupied") {
+        updateRouteInfo(
+          `Spot <strong>${spotLabel(spotForNode(selectedSpotNodeId))}</strong> is <strong>occupied</strong>.`
+        );
+      }
+    } else {
+      updateRouteInfo("Vehicle moved along the road.");
+    }
+    draw();
+    return;
+  }
+});
+
+function handleSpotClick(spotId) {
+  if (!lotData) return;
+
+  if (selectedSpotNodeId === spotId && routePath.length > 0) {
+    selectedSpotNodeId = null;
+    routePath = [];
+    updateRouteInfo();
+    draw();
+    return;
+  }
+
+  selectedSpotNodeId = spotId;
+  const spot = spotForNode(spotId);
   if (!spot) return;
 
   if (spot.status === "occupied") {
     routePath = [];
-    routeInfo.innerHTML = `Spot <strong>${spotLabel(spot)}</strong> is <strong>occupied</strong>. Choose a free or accessible stall.`;
+    updateRouteInfo(
+      `Spot <strong>${spotLabel(spot)}</strong> is <strong>occupied</strong>. Choose a free or accessible stall.`
+    );
     draw();
     return;
   }
 
-  const startId = vehicleNodeId();
-  if (!startId) {
+  if (!vehicleAnchorId) {
     routePath = [];
-    routeInfo.textContent = "No vehicle node defined for this lot.";
+    routeInfo.textContent = "No vehicle position on the road network.";
     draw();
     return;
   }
 
-  const path = astar(startId, nodeId, lotData.nodes, lotData.edges);
+  const path = astar(spotId, vehicleAnchorId, lotData.nodes, lotData.edges);
   if (!path) {
     routePath = [];
-    routeInfo.innerHTML = `No drivable route from the vehicle to <strong>${spotLabel(spot)}</strong>.`;
+    updateRouteInfo(
+      `No drivable route from <strong>${spotLabel(spot)}</strong> to the vehicle.`
+    );
     draw();
     return;
   }
 
   routePath = path;
-  const nodeMap = new Map(lotData.nodes.map((n) => [n.id, n]));
-  const length = pathLength(path, nodeMap);
-  routeInfo.innerHTML = `Route from <strong>vehicle</strong> → <strong>${spotLabel(spot)}</strong> (${spot.status})<br>${path.length} nodes · ~${Math.round(length)} px`;
+  updateRouteInfo();
   draw();
-});
+}
 
 canvas.style.cursor = "crosshair";
 

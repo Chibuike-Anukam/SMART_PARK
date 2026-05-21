@@ -100,14 +100,14 @@ def _classify_roi(roi: np.ndarray, stylized: bool) -> tuple[SpotClass, float]:
     gray_std = float(gray.std())
 
     if stylized:
-        if white_ratio > 0.18 and car_ratio < 0.12:
-            return "accessible", min(0.95, 0.55 + white_ratio * 2)
-        if non_bg_ratio < 0.22:
-            return "free", 0.88
         if car_ratio > 0.28 or non_bg_ratio > 0.48:
             return "occupied", min(0.98, 0.6 + car_ratio)
         if car_ratio > 0.08 or edge_ratio > 0.11:
             return "occupied", 0.82
+        if white_ratio > 0.18 and car_ratio < 0.06:
+            return "accessible", min(0.95, 0.55 + white_ratio * 2)
+        if non_bg_ratio < 0.22:
+            return "free", 0.88
         return "free", 0.75
 
     # Aerial / photo lots: vehicles raise texture (std, edges) in the stall center
