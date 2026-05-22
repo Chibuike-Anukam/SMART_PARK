@@ -1,0 +1,587 @@
+{
+  "id": "parking-lot-1",
+  "image": "tempImages/parking-lot-1.png",
+  "width": 600,
+  "height": 395,
+  "layout": "2x6",
+  "summary": {
+    "total_spots": 12,
+    "free": 4,
+    "occupied": 8
+  },
+  "spots": [
+    {
+      "id": "parking-lot-1_r0_c0",
+      "row": 0,
+      "col": 0,
+      "x": 90.75,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "occupied",
+      "confidence": 0.7126269956458635
+    },
+    {
+      "id": "parking-lot-1_r0_c1",
+      "row": 0,
+      "col": 1,
+      "x": 174.25,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "occupied",
+      "confidence": 0.98
+    },
+    {
+      "id": "parking-lot-1_r0_c2",
+      "row": 0,
+      "col": 2,
+      "x": 257.75,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "occupied",
+      "confidence": 0.6917271407837445
+    },
+    {
+      "id": "parking-lot-1_r0_c3",
+      "row": 0,
+      "col": 3,
+      "x": 341.25,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "occupied",
+      "confidence": 0.98
+    },
+    {
+      "id": "parking-lot-1_r0_c4",
+      "row": 0,
+      "col": 4,
+      "x": 424.75,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "free",
+      "confidence": 0.88
+    },
+    {
+      "id": "parking-lot-1_r0_c5",
+      "row": 0,
+      "col": 5,
+      "x": 508.25,
+      "y": 126.0,
+      "w": 83.5,
+      "h": 138.0,
+      "status": "occupied",
+      "confidence": 0.6894752358490566
+    },
+    {
+      "id": "parking-lot-1_r1_c0",
+      "row": 1,
+      "col": 0,
+      "x": 90.75,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "occupied",
+      "confidence": 0.98
+    },
+    {
+      "id": "parking-lot-1_r1_c1",
+      "row": 1,
+      "col": 1,
+      "x": 174.25,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "free",
+      "confidence": 0.88
+    },
+    {
+      "id": "parking-lot-1_r1_c2",
+      "row": 1,
+      "col": 2,
+      "x": 257.75,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "occupied",
+      "confidence": 0.98
+    },
+    {
+      "id": "parking-lot-1_r1_c3",
+      "row": 1,
+      "col": 3,
+      "x": 341.25,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "occupied",
+      "confidence": 0.98
+    },
+    {
+      "id": "parking-lot-1_r1_c4",
+      "row": 1,
+      "col": 4,
+      "x": 424.75,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "free",
+      "confidence": 0.88
+    },
+    {
+      "id": "parking-lot-1_r1_c5",
+      "row": 1,
+      "col": 5,
+      "x": 508.25,
+      "y": 265.5,
+      "w": 83.5,
+      "h": 139.0,
+      "status": "free",
+      "confidence": 0.88
+    }
+  ],
+  "nodes": [
+    {
+      "id": "perim_tl",
+      "x": 18.64,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_tr",
+      "x": 580.36,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bl",
+      "x": 18.64,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_br",
+      "x": 580.36,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_0",
+      "x": 90.75,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_1",
+      "x": 174.25,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_2",
+      "x": 257.75,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_3",
+      "x": 341.25,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_4",
+      "x": 424.75,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_top_5",
+      "x": 508.25,
+      "y": 26.64,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_0",
+      "x": 90.75,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_1",
+      "x": 174.25,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_2",
+      "x": 257.75,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_3",
+      "x": 341.25,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_4",
+      "x": 424.75,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "perim_bottom_5",
+      "x": 508.25,
+      "y": 365.36,
+      "kind": "perimeter",
+      "spot_id": null
+    },
+    {
+      "id": "node_parking-lot-1_r0_c0",
+      "x": 90.75,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c0"
+    },
+    {
+      "id": "node_parking-lot-1_r0_c1",
+      "x": 174.25,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c1"
+    },
+    {
+      "id": "node_parking-lot-1_r0_c2",
+      "x": 257.75,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c2"
+    },
+    {
+      "id": "node_parking-lot-1_r0_c3",
+      "x": 341.25,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c3"
+    },
+    {
+      "id": "node_parking-lot-1_r0_c4",
+      "x": 424.75,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c4"
+    },
+    {
+      "id": "node_parking-lot-1_r0_c5",
+      "x": 508.25,
+      "y": 126.0,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r0_c5"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c0",
+      "x": 90.75,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c0"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c1",
+      "x": 174.25,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c1"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c2",
+      "x": 257.75,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c2"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c3",
+      "x": 341.25,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c3"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c4",
+      "x": 424.75,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c4"
+    },
+    {
+      "id": "node_parking-lot-1_r1_c5",
+      "x": 508.25,
+      "y": 265.5,
+      "kind": "spot",
+      "spot_id": "parking-lot-1_r1_c5"
+    },
+    {
+      "id": "vehicle",
+      "x": 14.0,
+      "y": 365.36,
+      "kind": "vehicle",
+      "spot_id": null
+    }
+  ],
+  "edges": [
+    [
+      "perim_top_0",
+      "node_parking-lot-1_r0_c0"
+    ],
+    [
+      "perim_top_1",
+      "node_parking-lot-1_r0_c1"
+    ],
+    [
+      "perim_top_2",
+      "node_parking-lot-1_r0_c2"
+    ],
+    [
+      "perim_top_3",
+      "node_parking-lot-1_r0_c3"
+    ],
+    [
+      "perim_top_4",
+      "node_parking-lot-1_r0_c4"
+    ],
+    [
+      "perim_top_5",
+      "node_parking-lot-1_r0_c5"
+    ],
+    [
+      "perim_bottom_0",
+      "node_parking-lot-1_r1_c0"
+    ],
+    [
+      "perim_bottom_1",
+      "node_parking-lot-1_r1_c1"
+    ],
+    [
+      "perim_bottom_2",
+      "node_parking-lot-1_r1_c2"
+    ],
+    [
+      "perim_bottom_3",
+      "node_parking-lot-1_r1_c3"
+    ],
+    [
+      "perim_bottom_4",
+      "node_parking-lot-1_r1_c4"
+    ],
+    [
+      "perim_bottom_5",
+      "node_parking-lot-1_r1_c5"
+    ],
+    [
+      "perim_tl",
+      "perim_top_0"
+    ],
+    [
+      "perim_top_0",
+      "perim_top_1"
+    ],
+    [
+      "perim_top_1",
+      "perim_top_2"
+    ],
+    [
+      "perim_top_2",
+      "perim_top_3"
+    ],
+    [
+      "perim_top_3",
+      "perim_top_4"
+    ],
+    [
+      "perim_top_4",
+      "perim_top_5"
+    ],
+    [
+      "perim_top_5",
+      "perim_tr"
+    ],
+    [
+      "perim_bl",
+      "perim_bottom_0"
+    ],
+    [
+      "perim_bottom_0",
+      "perim_bottom_1"
+    ],
+    [
+      "perim_bottom_1",
+      "perim_bottom_2"
+    ],
+    [
+      "perim_bottom_2",
+      "perim_bottom_3"
+    ],
+    [
+      "perim_bottom_3",
+      "perim_bottom_4"
+    ],
+    [
+      "perim_bottom_4",
+      "perim_bottom_5"
+    ],
+    [
+      "perim_bottom_5",
+      "perim_br"
+    ],
+    [
+      "perim_tl",
+      "perim_bl"
+    ],
+    [
+      "perim_tr",
+      "perim_br"
+    ],
+    [
+      "vehicle",
+      "perim_bl"
+    ],
+    [
+      "node_parking-lot-1_r0_c0",
+      "perim_top_0"
+    ],
+    [
+      "node_parking-lot-1_r0_c1",
+      "perim_top_1"
+    ],
+    [
+      "node_parking-lot-1_r0_c2",
+      "perim_top_2"
+    ],
+    [
+      "node_parking-lot-1_r0_c3",
+      "perim_top_3"
+    ],
+    [
+      "node_parking-lot-1_r0_c4",
+      "perim_top_4"
+    ],
+    [
+      "node_parking-lot-1_r0_c5",
+      "perim_top_5"
+    ],
+    [
+      "node_parking-lot-1_r1_c0",
+      "perim_bottom_0"
+    ],
+    [
+      "node_parking-lot-1_r1_c1",
+      "perim_bottom_1"
+    ],
+    [
+      "node_parking-lot-1_r1_c2",
+      "perim_bottom_2"
+    ],
+    [
+      "node_parking-lot-1_r1_c3",
+      "perim_bottom_3"
+    ],
+    [
+      "node_parking-lot-1_r1_c4",
+      "perim_bottom_4"
+    ],
+    [
+      "node_parking-lot-1_r1_c5",
+      "perim_bottom_5"
+    ],
+    [
+      "perim_top_0",
+      "perim_tl"
+    ],
+    [
+      "perim_top_1",
+      "perim_top_0"
+    ],
+    [
+      "perim_top_2",
+      "perim_top_1"
+    ],
+    [
+      "perim_top_3",
+      "perim_top_2"
+    ],
+    [
+      "perim_top_4",
+      "perim_top_3"
+    ],
+    [
+      "perim_top_5",
+      "perim_top_4"
+    ],
+    [
+      "perim_tr",
+      "perim_top_5"
+    ],
+    [
+      "perim_bottom_0",
+      "perim_bl"
+    ],
+    [
+      "perim_bottom_1",
+      "perim_bottom_0"
+    ],
+    [
+      "perim_bottom_2",
+      "perim_bottom_1"
+    ],
+    [
+      "perim_bottom_3",
+      "perim_bottom_2"
+    ],
+    [
+      "perim_bottom_4",
+      "perim_bottom_3"
+    ],
+    [
+      "perim_bottom_5",
+      "perim_bottom_4"
+    ],
+    [
+      "perim_br",
+      "perim_bottom_5"
+    ],
+    [
+      "perim_bl",
+      "perim_tl"
+    ],
+    [
+      "perim_br",
+      "perim_tr"
+    ],
+    [
+      "perim_bl",
+      "vehicle"
+    ]
+  ],
+  "lane_vehicle": null,
+  "vehicle_id": "vehicle"
+}

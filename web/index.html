@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMART_PARK — Lot Map & Routing</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>SMART_PARK</h1>
+      <div class="controls">
+        <label for="lotSelect">Parking lot</label>
+        <select id="lotSelect"></select>
+        <span class="summary" id="summary"></span>
+      </div>
+    </header>
+    <main>
+      <section class="map-panel">
+        <canvas id="mapCanvas" aria-label="Parking lot map"></canvas>
+      </section>
+      <aside class="sidebar">
+        <h2>Spot classes</h2>
+        <ul class="legend">
+          <li><span class="swatch" style="background: #ef4444"></span> Occupied (car)</li>
+          <li><span class="swatch" style="background: #22c55e"></span> Free</li>
+          <li><span class="swatch" style="background: #22d3ee"></span> Accessible</li>
+          <li><span class="swatch" style="background: #facc15"></span> Road (not clickable)</li>
+          <li><span class="swatch" style="background: #3b82f6"></span> Your vehicle</li>
+          <li><span class="swatch" style="background: #f97316; height: 4px"></span> Nearest free (default)</li>
+          <li><span class="swatch" style="background: #22c55e; height: 4px"></span> Selected spot route</li>
+        </ul>
+        <p class="hint">
+          Click yellow road nodes to move the blue vehicle. Orange shows vehicle → nearest free spot. Click a white spot for a green path from that stall to the vehicle.
+        </p>
+        <h2>Route</h2>
+        <div id="routeInfo">Loading…</div>
+      </aside>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
