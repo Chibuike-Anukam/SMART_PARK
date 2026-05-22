@@ -11,18 +11,18 @@ img2 = cv2.imread('right.jpg')
 
 # Points clicked in left (original resolution)
 pts1 = np.float32([
-    [6210, 640],   # marker 1
-    [3790, 3290],   # marker 2
-    [8600, 3320],  # marker 3
-    [6050, 5590],  # marker 4
+    [1570, 820],   # marker 1
+    [1000, 2000],   # marker 2
+    [2330, 1930],  # marker 3
+    [1540, 2920],  # marker 4
 ])
 
 # The same physical markers clicked in right
 pts2 = np.float32([
-    [3340,  770],   # marker 1
-    [850, 3430],   # marker 2
-    [5670, 3510],  # marker 3
-    [3110, 5810],  # marker 4
+    [880,  830],   # marker 1
+    [320, 2010],   # marker 2
+    [1630, 1920],  # marker 3
+    [850, 2930],  # marker 4
 ])
 
 # ── 3. DEFINE WHERE THOSE POINTS SHOULD GO IN THE FINAL TOP-DOWN VIEW
@@ -31,19 +31,19 @@ pts2 = np.float32([
 # Measure the real-world distances between your markers if you can,
 # otherwise estimate based on their relative positions.
 
-OUTPUT_W = 1200  # width of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
-OUTPUT_H = 800   # height of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
+# scale: 1cm = 10px
+
+OUTPUT_W = 1400  # width of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
+OUTPUT_H = 1900   # height of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
 
 # Where each marker should land in the output (top-down view)
 # Adjust these to match the real layout of your markers on the surface
 pts_dst = np.float32([
-    [100,  100],   # marker 1 → top-left area
-    [700,  100],   # marker 2 → top-right area
-    [100,  700],   # marker 3 → bottom-left area
-    [700,  700],   # marker 4 → bottom-right area
+    [700,  600],   # marker 1 - 7cm right, 6cm down 
+    [400,  1100],   # marker 2 - 4cm right, 11cm down
+    [1000,  1100],   # marker 3 - 10cm right, 11cm down
+    [700,  1500],   # marker 4 - 7cm right, 15cm down
 ])
-
-######## SEE WHAT CLAUDE DID
 
 
 # ── 4. COMPUTE HOMOGRAPHIES ────────────────────────────────────────
@@ -51,7 +51,7 @@ pts_dst = np.float32([
 H1, _ = cv2.findHomography(pts1, pts_dst, cv2.RANSAC)
 H2, _ = cv2.findHomography(pts2, pts_dst, cv2.RANSAC)
 
-# ── 5. WARP BOTH IMAGES INTO TOP-DOWN VIEW ─────────────────────────
+# ── 5. WARP BOTH IMAGES INTO TOP-DOWN VIEW ─────────────────────────   ## ASK CLAUDE WHY WE DID THIS IF BOTH IMAGES ARE ALREADY TOP-DOWN
 warped1 = cv2.warpPerspective(img1, H1, (OUTPUT_W, OUTPUT_H))
 warped2 = cv2.warpPerspective(img2, H2, (OUTPUT_W, OUTPUT_H))
 
