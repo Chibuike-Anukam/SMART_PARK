@@ -1,7 +1,7 @@
 import cv2
 
 # Change this to 'photo1.jpg' or 'photo2.jpg'
-IMAGE_PATH = 'right.jpg'
+IMAGE_PATH = 'left.jpg'
 
 points = []
 img = cv2.imread(IMAGE_PATH)

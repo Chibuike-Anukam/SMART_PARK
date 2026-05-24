@@ -10,20 +10,24 @@ img2 = cv2.imread('right.jpg')
 # in both photos. You need at least 4 shared markers.
 
 # Points clicked in left (original resolution)
+'''
 pts1 = np.float32([
     [1570, 820],   # marker 1
     [1000, 2000],   # marker 2
     [2330, 1930],  # marker 3
     [1540, 2920],  # marker 4
-])
+])'''
+pts1 = np.float32([(1572, 838), (979, 2022), (2321, 1975), (1561, 2908)])
 
 # The same physical markers clicked in right
+'''
 pts2 = np.float32([
     [880,  830],   # marker 1
     [320, 2010],   # marker 2
     [1630, 1920],  # marker 3
     [850, 2930],  # marker 4
-])
+])'''
+pts2 = np.float32([(896, 827), (303, 2027), (1629, 1970), (875, 2934)])
 
 # ── 3. DEFINE WHERE THOSE POINTS SHOULD GO IN THE FINAL TOP-DOWN VIEW
 # This is your "ideal" flat coordinate space.
@@ -33,17 +37,26 @@ pts2 = np.float32([
 
 # scale: 1cm = 10px
 
-OUTPUT_W = 1400  # width of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
-OUTPUT_H = 1900   # height of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
+OUTPUT_W = 1800  # width of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
+OUTPUT_H = 2400   # height of final stitched image in pixels --- CHANGE BASED ON YOUR MEASUREMENTS
 
 # Where each marker should land in the output (top-down view)
 # Adjust these to match the real layout of your markers on the surface
+pts_dst = np.float32([
+    [700,  600],   # marker 1 - 7cm right, 6cm down     ### CHANGE LOCATION OF ONE POINT AT A TIME AND SEE RESULT
+    [400,  1100],   # marker 2 - 4cm right, 11cm down   ## TRY RETAKING PHOTOS, BUT USE TINY STICKERS OR SOMETHING SMALL SO YOU DON'T HAVE TO WORRY ABOUT MEASURING TO THE CENTRE OF THE MARKER
+    [1000,  1100],   # marker 3 - 10cm right, 11cm down
+    [700,  1500],   # marker 4 - 7cm right, 15cm down
+])
+
+''' Original output points
 pts_dst = np.float32([
     [700,  600],   # marker 1 - 7cm right, 6cm down 
     [400,  1100],   # marker 2 - 4cm right, 11cm down
     [1000,  1100],   # marker 3 - 10cm right, 11cm down
     [700,  1500],   # marker 4 - 7cm right, 15cm down
-])
+])'''
+
 
 
 # ── 4. COMPUTE HOMOGRAPHIES ────────────────────────────────────────
@@ -82,8 +95,10 @@ result = result.astype(np.uint8)
 cv2.imwrite('stitched_topdown.png', result)
 
 # Show each step so you can debug
-cv2.imshow('Photo 1 warped', cv2.resize(warped1, (800, 500)))
-cv2.imshow('Photo 2 warped', cv2.resize(warped2, (800, 500)))
+cv2.imshow('Left image warped', cv2.resize(warped1, (800, 500)))
+#cv2.imwrite('left_warped.png', warped1)
+cv2.imshow('Right image warped', cv2.resize(warped2, (800, 500)))
+#cv2.imwrite('right_warped.png', warped2)
 cv2.imshow('Final stitched', cv2.resize(result, (800, 500)))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
