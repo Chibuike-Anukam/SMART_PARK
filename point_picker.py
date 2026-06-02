@@ -1,13 +1,13 @@
 import cv2
 
 # Change this to 'photo1.jpg' or 'photo2.jpg'
-IMAGE_PATH = 'left.jpg'
+IMAGE_PATH = 'right.jpg'
 
 points = []
 img = cv2.imread(IMAGE_PATH)
 
 # Resize for display if image is very large (phone photos are huge)
-display_scale = 0.1
+display_scale = 0.4
 display = cv2.resize(img, (
     int(img.shape[1] * display_scale),
     int(img.shape[0] * display_scale)
