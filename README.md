@@ -51,15 +51,17 @@ flowchart LR
   API --> UI
 ```
 
-| Stage | Technology | Role |
-|-------|------------|------|
-| Image stitching | **OpenCV** (`cv2.Stitcher`), **NumPy**, **imutils** | Build a single panorama from overlapping camera images |
-| Homography / calibration | **OpenCV** (`findHomography`, `warpPerspective`) | Optional manual or semi-automatic alignment (`manual_homography.py`) |
-| Detection | **Ultralytics YOLO** + **OpenCV** | Train and run inference for classes such as `car` and `free_spot` |
-| Occupancy grid | **NumPy** / **OpenCV** | Map detections to discrete parking cells on the stitched image |
-| Pathfinding | **A\*** on a custom graph (e.g. **NetworkX** for prototyping) | Shortest path from entry → target free spot along drivable lanes |
-| API | **FastAPI** | Serve panorama metadata, spot status, and computed routes |
-| Frontend | **React** + **TypeScript** (Vite) | Canvas or SVG overlay for spots, availability, and path animation |
+| Stage | Technology | Role | Status |
+|-------|------------|------|--------|
+| Image stitching | **OpenCV** (`cv2.Stitcher`), **NumPy**, **imutils** | Build a single panorama from overlapping camera images | Done |
+| Homography / calibration | **OpenCV** (`findHomography`, `warpPerspective`) | Marker-based alignment (`rectify_and_stitch.py`, pickers) | Done (needs tuning) |
+| Detection (demo) | **OpenCV** heuristics | Grid-based spot occupancy on sample lot images | Done |
+| Detection (production) | **Ultralytics YOLO** + **OpenCV** | Train and run inference for classes such as `car` and `free_spot` | Planned |
+| Occupancy grid | **NumPy** / **OpenCV** | Map detections to discrete parking cells on the stitched image | Done (demo) |
+| Pathfinding | **A\*** on a custom graph | Shortest path from vehicle → target free spot along drivable lanes | Done |
+| API | **FastAPI** | Serve panorama metadata, spot status, and computed routes | Planned |
+| Frontend | **HTML/CSS/JS** (`web/`) | Canvas overlay for spots, availability, and path animation | Done (prototype) |
+| Frontend (production) | **React** + **TypeScript** (Vite) | Polished client with live updates | Planned |
 
 ### Why A\*?
 
@@ -69,31 +71,48 @@ Parking lots are naturally modeled as a **graph**: nodes are lane junctions, ais
 
 | Component | Status |
 |-----------|--------|
-| Panorama stitching | In progress — `image_stitching_panorama.py` |
-| Post-stitch crop / cleanup | In progress — fast downscale + contour crop |
-| Manual homography | Planned — `manual_homography.py` |
+| Panorama stitching | **Done** — `image_stitching_panorama.py` |
+| Post-stitch crop / cleanup | **Done** — fast downscale + contour crop in `image_stitching_panorama.py` |
+| Manual homography alignment | **Done** — `rectify_and_stitch.py`, `point_picker.py`, `side_by_side_picker.py`, `brute_force.py` |
+| Heuristic spot classification (demo) | **Done** — `parking_classifier.py` (3 sample lots in `tempImages/`) |
+| Lot graph generation | **Done** — `parking_classifier.py` → `data/lots/*.json` |
+| A\* routing | **Done** — `web/app.js` (nearest-free + spot-to-vehicle paths) |
+| Dijkstra prototype | **Done** — `graph_maker.py` (toy graph; not wired to lot JSON yet) |
+| Web map UI (prototype) | **Done** — `web/`, `serve_parking.py` |
 | YOLO dataset & training | Planned |
-| Lot graph + A\* routing | Planned |
-| Web app | Planned |
+| Bbox center → spot/node mapping | Planned |
+| FastAPI backend | Planned |
+| React + TypeScript client | Planned |
+| Stable top-down map (production) | In progress — homography warping still needs tuning |
 
 ## Repository layout
 
 ```
 SMART_PARK/
 ├── image_stitching_panorama.py   # Stitch images → panorama + cropped output
-├── manual_homography.py            # (planned) Point-pair homography alignment
-├── unstitchedImages/               # Sample image set (4 views)
+├── rectify_and_stitch.py         # Homography warp + blend (marker-based)
+├── point_picker.py               # Click markers on a single image
+├── side_by_side_picker.py        # Click matching marker pairs across two images
+├── parking_classifier.py         # Grid spots, heuristic occupancy, graph JSON
+├── graph_maker.py                # Standalone Dijkstra demo
+├── serve_parking.py              # Static server for the web map
+├── web/                          # Interactive map UI (HTML/CSS/JS + A*)
+├── data/lots/                    # Generated lot graphs + spot status
+├── data/previews/                # Classified lot preview images
+├── tempImages/                   # Sample parking lot images
+├── refImages/                    # Wireframe / graph reference diagrams
+├── unstitchedImages/             # Sample image sets for stitching
 ├── unstitchedImages2/
-├── unstitchedImages3/              # Default input for stitching script
-├── stitchedOutput.png              # Raw stitch output
-├── StitchedOutputProcessed.png     # Cropped / cleaned panorama
+├── unstitchedImages3/            # Default input for stitching script
+├── stitchedOutput.png            # Raw stitch output
+├── StitchedOutputProcessed.png   # Cropped / cleaned panorama
 └── README.md
 ```
 
 ## Prerequisites
 
 - **Python 3.10+** (3.11 or 3.12 recommended)
-- **Node.js 18+** (for the web client, when added)
+- **Node.js 18+** (only if you add the planned React client)
 - A GPU is optional but speeds up YOLO training and inference
 
 ## Setup
@@ -138,7 +157,15 @@ Outputs:
 
 The stitcher exposes resolution knobs (`setRegistrationResol`, `setSeamEstimationResol`) to balance quality, speed, and memory on large images.
 
-### 3. Detection (planned)
+### 3. Detection
+
+**Demo (done):** run heuristic classification on the sample lots and regenerate JSON:
+
+```bash
+python parking_classifier.py
+```
+
+**YOLO (planned):**
 
 1. **Collect data** — Frames or stills from the stitched (or raw) views, labeled in a tool such as [CVAT](https://www.cvat.ai/) or [Roboflow](https://roboflow.com/).
 2. **Classes** — At minimum: `car` (occupied) and `free_spot` (or `empty`), aligned with how spots appear from your camera angle.
@@ -154,17 +181,30 @@ yolo detect train data=parking.yaml model=yolo11n.pt epochs=100 imgsz=640
 yolo detect predict model=runs/detect/train/weights/best.pt source=stitchedOutput.png
 ```
 
-### 4. Pathfinding (planned)
+### 4. Pathfinding
 
-1. Define a **graph** over the lot (JSON or Python): nodes, edges, which nodes correspond to spots, and entrance node(s).
-2. Mark nodes/spots **blocked** when detection says they are occupied.
-3. Run **A\*** from the user’s start node to the nearest free spot node (or a user-selected spot).
-4. Return the node sequence to the API for the frontend to draw as a polyline on the map.
+**Done (demo):**
 
-### 5. Web app (planned)
+1. `parking_classifier.py` builds a **graph** per lot (nodes, edges, spot nodes, vehicle anchor) and writes `data/lots/*.json`.
+2. Occupied spots are marked in that JSON from classification (heuristic today; YOLO later).
+3. `web/app.js` runs **A\*** for nearest-free routing and spot-to-vehicle routing on the canvas.
+
+**Planned:** expose routing via a FastAPI endpoint instead of client-side only.
+
+### 5. Web app
+
+**Done (prototype):**
+
+```bash
+python serve_parking.py
+```
+
+Open `http://127.0.0.1:8080/web/` — lot selector, occupancy overlay, road nodes, orange route to nearest free spot, green route to a selected spot.
+
+**Planned:**
 
 - **Backend**: FastAPI endpoints such as `GET /lot/status`, `POST /route?spot_id=…`, optional WebSocket for live camera updates.
-- **Frontend**: React map component over the stitched image; green/red spots; highlighted path; optional “navigate to nearest free spot” action.
+- **Frontend**: React + TypeScript (Vite) client to replace the vanilla `web/` prototype.
 
 ## Configuration tips
 
@@ -179,8 +219,10 @@ yolo detect predict model=runs/detect/train/weights/best.pt source=stitchedOutpu
 
 - [ ] Finalize stitching and homography for a stable top-down map
 - [ ] Label dataset and train YOLO model for `car` / `free_spot`
-- [ ] Map detections → parking spot IDs on the panorama
-- [ ] Build lot graph and A\* pathfinding module
+- [ ] Map YOLO bounding-box centers → parking spot / graph nodes
+- [x] Heuristic spot classification for demo lots (`parking_classifier.py`)
+- [x] Build lot graph and A\* pathfinding module
+- [x] Interactive web map with availability and routing (`web/`, `serve_parking.py`)
 - [ ] FastAPI service + React client with live availability and routing
 - [ ] Optional: RTSP camera ingest and periodic re-stitch / re-detect
 
