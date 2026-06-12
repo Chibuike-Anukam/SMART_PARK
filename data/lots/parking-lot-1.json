@@ -6,8 +6,8 @@
   "layout": "2x6",
   "summary": {
     "total_spots": 12,
-    "free": 4,
-    "occupied": 8
+    "free": 6,
+    "occupied": 6
   },
   "spots": [
     {
@@ -16,10 +16,10 @@
       "col": 0,
       "x": 90.75,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
+      "w": 81.5,
+      "h": 116.0,
       "status": "occupied",
-      "confidence": 0.7126269956458635
+      "confidence": 0.7328042328042328
     },
     {
       "id": "parking-lot-1_r0_c1",
@@ -27,8 +27,8 @@
       "col": 1,
       "x": 174.25,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
+      "w": 81.5,
+      "h": 116.0,
       "status": "occupied",
       "confidence": 0.98
     },
@@ -38,10 +38,10 @@
       "col": 2,
       "x": 257.75,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
-      "status": "occupied",
-      "confidence": 0.6917271407837445
+      "w": 81.5,
+      "h": 116.0,
+      "status": "accessible",
+      "confidence": 0.95
     },
     {
       "id": "parking-lot-1_r0_c3",
@@ -49,10 +49,10 @@
       "col": 3,
       "x": 341.25,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
+      "w": 81.5,
+      "h": 116.0,
       "status": "occupied",
-      "confidence": 0.98
+      "confidence": 0.7729166666666667
     },
     {
       "id": "parking-lot-1_r0_c4",
@@ -60,10 +60,10 @@
       "col": 4,
       "x": 424.75,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
-      "status": "free",
-      "confidence": 0.88
+      "w": 81.5,
+      "h": 116.0,
+      "status": "accessible",
+      "confidence": 0.8163139329805997
     },
     {
       "id": "parking-lot-1_r0_c5",
@@ -71,10 +71,10 @@
       "col": 5,
       "x": 508.25,
       "y": 126.0,
-      "w": 83.5,
-      "h": 138.0,
-      "status": "occupied",
-      "confidence": 0.6894752358490566
+      "w": 81.5,
+      "h": 116.0,
+      "status": "accessible",
+      "confidence": 0.95
     },
     {
       "id": "parking-lot-1_r1_c0",
@@ -82,8 +82,8 @@
       "col": 0,
       "x": 90.75,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
+      "w": 81.5,
+      "h": 117.0,
       "status": "occupied",
       "confidence": 0.98
     },
@@ -93,10 +93,10 @@
       "col": 1,
       "x": 174.25,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
-      "status": "free",
-      "confidence": 0.88
+      "w": 81.5,
+      "h": 117.0,
+      "status": "accessible",
+      "confidence": 0.7884129213483146
     },
     {
       "id": "parking-lot-1_r1_c2",
@@ -104,8 +104,8 @@
       "col": 2,
       "x": 257.75,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
+      "w": 81.5,
+      "h": 117.0,
       "status": "occupied",
       "confidence": 0.98
     },
@@ -115,8 +115,8 @@
       "col": 3,
       "x": 341.25,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
+      "w": 81.5,
+      "h": 117.0,
       "status": "occupied",
       "confidence": 0.98
     },
@@ -126,10 +126,10 @@
       "col": 4,
       "x": 424.75,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
-      "status": "free",
-      "confidence": 0.88
+      "w": 81.5,
+      "h": 117.0,
+      "status": "accessible",
+      "confidence": 0.8025414660246122
     },
     {
       "id": "parking-lot-1_r1_c5",
@@ -137,122 +137,122 @@
       "col": 5,
       "x": 508.25,
       "y": 265.5,
-      "w": 83.5,
-      "h": 139.0,
-      "status": "free",
-      "confidence": 0.88
+      "w": 81.5,
+      "h": 117.0,
+      "status": "accessible",
+      "confidence": 0.7901685393258427
     }
   ],
   "nodes": [
     {
       "id": "perim_tl",
-      "x": 18.64,
-      "y": 26.64,
+      "x": 24.48,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_tr",
-      "x": 580.36,
-      "y": 26.64,
+      "x": 574.52,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bl",
-      "x": 18.64,
-      "y": 365.36,
+      "x": 24.48,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_br",
-      "x": 580.36,
-      "y": 365.36,
+      "x": 574.52,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_0",
       "x": 90.75,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_1",
       "x": 174.25,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_2",
       "x": 257.75,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_3",
       "x": 341.25,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_4",
       "x": 424.75,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_top_5",
       "x": 508.25,
-      "y": 26.64,
+      "y": 42.480000000000004,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_0",
       "x": 90.75,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_1",
       "x": 174.25,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_2",
       "x": 257.75,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_3",
       "x": 341.25,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_4",
       "x": 424.75,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
     {
       "id": "perim_bottom_5",
       "x": 508.25,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "perimeter",
       "spot_id": null
     },
@@ -343,7 +343,7 @@
     {
       "id": "vehicle",
       "x": 14.0,
-      "y": 365.36,
+      "y": 349.52,
       "kind": "vehicle",
       "spot_id": null
     }

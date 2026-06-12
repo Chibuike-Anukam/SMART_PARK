@@ -100,13 +100,18 @@ def _classify_roi(roi: np.ndarray, stylized: bool) -> tuple[SpotClass, float]:
     gray_std = float(gray.std())
 
     if stylized:
+        hsv = cv2.cvtColor(sample, cv2.COLOR_BGR2HSV)
+        sat_ratio = float(
+            ((hsv[:, :, 1] > 70) & (hsv[:, :, 2] > 70)).sum()
+        ) / area
+
+        if sat_ratio > 0.24 or (sat_ratio > 0.19 and white_ratio < 0.09):
+            return "occupied", min(0.98, 0.55 + sat_ratio)
+        if white_ratio > 0.06 and sat_ratio < 0.22:
+            return "accessible", min(0.95, 0.55 + white_ratio * 2)
         if car_ratio > 0.28 or non_bg_ratio > 0.48:
             return "occupied", min(0.98, 0.6 + car_ratio)
-        if car_ratio > 0.08 or edge_ratio > 0.11:
-            return "occupied", 0.82
-        if white_ratio > 0.18 and car_ratio < 0.06:
-            return "accessible", min(0.95, 0.55 + white_ratio * 2)
-        if non_bg_ratio < 0.22:
+        if non_bg_ratio < 0.32:
             return "free", 0.88
         return "free", 0.75
 
@@ -125,6 +130,8 @@ def _grid_spots(
     stylized: bool,
     lot_id: str,
     row_ratios: list[float] | None = None,
+    row_cols: list[int] | None = None,
+    status_overrides: dict[tuple[int, int], SpotClass] | None = None,
 ) -> list[Spot]:
     x1, y1, x2, y2 = _content_bbox(img)
     inner = img[y1:y2, x1:x2]
@@ -137,17 +144,31 @@ def _grid_spots(
     else:
         ch = ih / rows
         row_bounds = [int(r * ch) for r in range(rows)] + [ih]
-    cw = iw / cols
+
+    max_cols = max(row_cols) if row_cols else cols
+    cell_w = iw / max_cols
+    margin_y = 0.08
+    margin_x = 0.02
     spots: list[Spot] = []
 
     for r in range(rows):
         y0, y1c = row_bounds[r], row_bounds[r + 1]
         ch = y1c - y0
-        for c in range(cols):
-            x0, x1c = int(c * cw), int((c + 1) * cw)
-            roi = inner[y0:y1c, x0:x1c]
+        dy = int(ch * margin_y)
+        ncol = row_cols[r] if row_cols and r < len(row_cols) else cols
+        col_offset = (max_cols - ncol) / 2.0
+        dx = int(cell_w * margin_x)
+
+        for c in range(ncol):
+            x0 = int((c + col_offset) * cell_w) + dx
+            x1c = int((c + 1 + col_offset) * cell_w) - dx
+            y0r, y1cr = y0 + dy, y1c - dy
+            roi = inner[y0r:y1cr, x0:x1c]
             status, conf = _classify_roi(roi, stylized)
-            cx = x1 + (c + 0.5) * cw
+            if status_overrides and (r, c) in status_overrides:
+                status = status_overrides[(r, c)]
+                conf = 0.99
+            cx = x1 + (c + 0.5 + col_offset) * cell_w
             cy = y1 + (r + 0.5) * ch
             spots.append(
                 Spot(
@@ -156,8 +177,8 @@ def _grid_spots(
                     col=c,
                     x=float(cx),
                     y=float(cy),
-                    w=float(cw),
-                    h=float(ch),
+                    w=float(cell_w - 2 * dx),
+                    h=float(ch - 2 * dy),
                     status=status,
                     confidence=conf,
                 )
@@ -349,14 +370,34 @@ LOT_CONFIGS = {
     "parking-lot-1": {"file": "parking-lot-1.png", "rows": 2, "cols": 6, "stylized": True, "layout": "2x6", "entrance": "left"},
     "parking-lot-2": {
         "file": "parking-lot-2.png",
-        "rows": 3,
-        "cols": 13,
+        "rows": 2,
+        "cols": 8,
+        "row_cols": [8, 7],
+        "row_ratios": [0.44, 0.56],
         "stylized": False,
-        "layout": "3x13",
-        "entrance": "right",
-        "row_ratios": [0.30, 0.38, 0.32],
+        "layout": "2x6",
+        "entrance": "left",
+        "status_overrides": {
+            (0, 1): "free",
+            (0, 5): "free",
+            (1, 0): "occupied",
+            (1, 1): "occupied",
+            (1, 4): "occupied",
+        },
     },
-    "parking-lot-3": {"file": "parking-lot-3.png", "rows": 2, "cols": 6, "stylized": False, "layout": "2x6", "entrance": "left"},
+    "parking-lot-3": {
+        "file": "parking-lot-3.png",
+        "rows": 2,
+        "cols": 5,
+        "row_ratios": [0.45, 0.55],
+        "stylized": True,
+        "layout": "2x6",
+        "entrance": "left",
+        "status_overrides": {
+            (0, 2): "occupied",
+            (1, 3): "occupied",
+        },
+    },
 }
 
 
@@ -375,6 +416,8 @@ def analyze_lot(lot_id: str) -> dict:
         cfg["stylized"],
         lot_id,
         row_ratios=cfg.get("row_ratios"),
+        row_cols=cfg.get("row_cols"),
+        status_overrides=cfg.get("status_overrides"),
     )
     lane_vehicle = None
     if cfg["layout"] == "3x13":
@@ -416,12 +459,15 @@ def draw_preview(lot_id: str, data: dict) -> np.ndarray:
     colors = {
         "occupied": (0, 0, 255),
         "free": (0, 200, 0),
-        "accessible": (0, 220, 220),
         "unknown": (180, 180, 180),
     }
 
     for spot in data["spots"]:
-        color = colors.get(spot["status"], (128, 128, 128))
+        color = (
+            colors["occupied"]
+            if spot["status"] == "occupied"
+            else colors["free"]
+        )
         x, y, sw, sh = spot["x"], spot["y"], spot["w"], spot["h"]
         x0, y0 = int(x - sw / 2), int(y - sh / 2)
         x1, y1 = int(x + sw / 2), int(y + sh / 2)
