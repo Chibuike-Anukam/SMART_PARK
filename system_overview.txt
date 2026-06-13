@@ -1,5 +1,0 @@
-To Do: 
-- Retake image with new pins
-- Add new markers for centre of parking spots and outside of spots 
-- Run model (mine; retrain if needed on this dataset: https://www.kaggle.com/datasets/ammarnassanalhajali/pklot-dataset)
-- Run code to find centre of bounding boxes to identify node that it corresponds to
