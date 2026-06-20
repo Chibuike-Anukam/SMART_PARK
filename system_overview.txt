@@ -2,4 +2,7 @@ To Do:
 - Retake image with new pins
 - Add new markers for centre of parking spots and outside of spots 
 - Run model (mine; retrain if needed on this dataset: https://www.kaggle.com/datasets/ammarnassanalhajali/pklot-dataset)
+--- model from school is bad (remember it was overfit), so I will have to take pictures of the moc parking lot, annotate about 50 of them, and retrain a NEW model
+--- use lego 2x4 bricks as "cars"
+--- take different pictures (fully occupied, fully vaccant, some vaccant spots, etc)
 - Run code to find centre of bounding boxes to identify node that it corresponds to

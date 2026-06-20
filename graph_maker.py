@@ -2,7 +2,7 @@ import heapq
 
 
 # 1. Store the real-world coordinates (X, Y in meters) of each pylon/spot
-# This is crucial for the A* heuristic (estimating distance to the goal)
+# This is crucial for the A* heuristic (estimating distance to the goal) ### CHANGE POINTS - ONLY UP TO 8, NOT 12!!!!
 node_coordinates = {
     'BL': (0.0, 0.0),
     'TL':  (0.0, 15.5),
@@ -35,7 +35,7 @@ node_coordinates = {
 }
 
 # 2. Store the Adjacency List (The map of valid paths and their weights)
-# Only connect pylons that have a straight, drivable lane between them!
+# Only connect pylons that have a straight, drivable lane between them! ### CHANGE POINTS - ONLY UP TO 8, NOT 12!!!!
 parking_lot_graph = {
     'BL': {'TL': 15.5, 'P7E': 5.625},
     'TL':  {'BL': 15.5, 'P1E': 5.625},

@@ -29,7 +29,7 @@ OUTPUT_H = 180   # height of final stitched image in pixels --- CHANGE BASED ON 
 # Where each marker should land in the output (top-down view)
 # Adjust these to match the real layout of your markers on the surface
 pts_dst = np.float32([
-    [165,  30],   # marker 1 - 16.5 right, 3cm down     ### CHANGE LOCATION OF ONE POINT AT A TIME AND SEE RESULT
+    [165,  30],   # marker 1 - 16.5 right, 3cm down     
     [112.5,  92.5],   # marker 2 - 11.25cm right, 9.25cm down   
     [165,  92.5],   # marker 3 - 16.5cm right, 9.25cm down
     [217.5,  92.5],   # marker 4 - 21.75cm right, 9.25cm down
