@@ -6,3 +6,4 @@ To Do:
 --- use lego 2x4 bricks as "cars"
 --- take different pictures (fully occupied, fully vaccant, some vaccant spots, etc)
 - Run code to find centre of bounding boxes to identify node that it corresponds to
+ 
