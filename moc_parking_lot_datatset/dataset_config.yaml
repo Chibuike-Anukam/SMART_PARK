@@ -4,4 +4,4 @@ val: C:\Projects\SMART_PARK\moc_parking_lot_datatset\val
 test: C:\Projects\SMART_PARK\moc_parking_lot_datatset\test
 
 nc: 2
-names: ['vacant', 'occupied'] 
+names: ['vaccant', 'occupied'] 
