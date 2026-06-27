@@ -1,1 +1,18 @@
+# Ignore virtual environments
+venv/
+.venv/
+env/
+
+# Ignore Python caching bytecode (speeds up execution locally, useless on GitHub)
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local IDE settings (VS Code)
+.vscode/
+
+# Ignore your project's local output images so you don't upload random test panoramas
+*.png
+*.jpg
+# unstitchedImages/
