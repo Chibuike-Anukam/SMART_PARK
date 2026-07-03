@@ -85,3 +85,4 @@ best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'P8E', vacant
 print(f"Navigation Path: {' -> '.join(best_path)}")
 print(f"Total Distance: {total_meters:.2f} centimeters")
 print(f"Chosen Spot: {chosen_spot}")
+

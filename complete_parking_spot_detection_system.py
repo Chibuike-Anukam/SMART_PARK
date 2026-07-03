@@ -84,6 +84,73 @@ for key in node_coordinates:
     else:
         node_coordinates_px[key] = [node_to_px(node_coordinates, key)]
 
-print(node_coordinates)
+#print(node_coordinates)
 print()
 print(node_coordinates_px)
+
+
+#### Part 4: Find the node in the node coordinate dict corresponding to the one from the image
+cor_nodes = []
+accuracy = 5
+
+for obj in detected_centers: # detected_centers is a list of dicts, so obj is a dict!
+    if obj['class_id'] == 0:
+        for node, coord in node_coordinates_px.items():
+            if abs(coord[0][0] - obj['center'][0]) <= accuracy and abs(coord[0][1] - obj['center'][1]) <= accuracy:
+                cor_nodes.append(node)
+
+
+print(cor_nodes)
+
+
+#### Part 5: Run path finding algorithm
+
+# --- SIMULATION ---
+# A vacant spot detection algorithm flags these spots as open
+# vacant_spot_set = {'P1', 'P4', 'P9', 'P12'}
+vacant_spot_set = set(cor_nodes)
+
+best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'BL', vacant_spot_set)
+
+print(f"Navigation Path: {' -> '.join(best_path)}")
+print(f"Total Distance: {total_meters:.2f} centimeters")
+print(f"Chosen Spot: {chosen_spot}")
+
+
+'''
+#######CLAUDE'S RESPONSE:
+
+
+import cv2
+
+img = cv2.imread('stitched_topdown.png')
+
+def node_to_px(node_name):
+    x_cm, y_cm = nodes[node_name]
+    return (int(x_cm * SCALE + PAD), int(y_cm * SCALE + PAD))
+
+# Draw all edges in grey
+for n1, n2 in edges:
+    cv2.line(img, node_to_px(n1), node_to_px(n2), (100, 100, 100), 1)
+
+# Draw shortest path in green
+for i in range(len(path) - 1):
+    cv2.line(img, node_to_px(path[i]), node_to_px(path[i+1]),
+             (0, 255, 0), 3)
+
+# Draw all nodes as circles
+for name, _ in nodes.items():
+    px = node_to_px(name)
+    cv2.circle(img, px, 8, (255, 255, 255), -1)
+    cv2.putText(img, name, (px[0]+10, px[1]),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)
+
+# Draw start and end in distinct colors
+cv2.circle(img, node_to_px(path[0]),  10, (0, 255, 0), -1)   # green = start
+cv2.circle(img, node_to_px(path[-1]), 10, (0, 0, 255), -1)   # red = end
+
+cv2.imwrite('path_overlay.png', img)
+cv2.imshow('Dijkstra Path', cv2.resize(img, (900, 600)))
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''

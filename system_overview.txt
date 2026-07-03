@@ -1,17 +1,10 @@
 What Was Done: 
-- Fixed graph_maker.py (node_coordinate dict had wrong location and wen up to 12 spots instead of 8)
-- Used command "save_txt=True" to save the labels after model does prediction
-- Made new script ("complete_parking_spot_detection_system.py") that will be the culmination of everything: 
---- Runs model on stitched image (I'm using one of the images in the test set for now) and saves labels
---- Calulates centre of predicted bounding boxes
---- Converts the node coordinates (the "node_coordinate" dict) to pixel values and saves them to a new dict -> bounding box centres and node coordinates are almost identical! 
+- Calculated accuracy/error between bounding box centres and node coordinates
+- Looped through the bounding box centres and node coordinate dict (pixel values) and found centres OF VACANT SPOTS ONLY ("if classID = 0:") that "match" (closest) pixel node coordinates
+- Passed those matched nodes into the "vacant_spot_set" (graph_maker.py) and ran the pathfinding algorithm (WORKED!)
 
 To Do (in "complete_parking_spot_detection_system.py" file): 
-- Calculate accuracy/error between bounding box centres and node coordinates
-- Loop through the bounding box centres and node coordinate dict (pixel values) and find centres OF VACANT SPOTS ONLY ("if classID = 0:") that "match" (closest) pixel node coordinates
-- Pass those matched nodes into the "vacant_spot_set" (graph_maker.py) and run the pathfinding algorithm
 - Draw the nodes (circles?) and edges (straight lines?) of the calculated shortest path DIRECTLY onto the image (suppose you start at BL)
 
-- When ALL above tasks are finalized, use the image stitcher scripts to get a stitched image and pass that to the model to run inferences
+-> When ALL above tasks are finalized, use the image stitcher scripts to get a stitched image and pass that to the model to run inferences
 
- 
