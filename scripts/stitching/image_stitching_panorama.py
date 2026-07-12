@@ -1,9 +1,12 @@
-import numpy as np
-import cv2
 import glob
-import imutils
+from pathlib import Path
 
-image_paths = glob.glob('unstitchedImages3/*.jpg')
+import cv2
+import imutils
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+image_paths = glob.glob(str(ROOT / "unstitchedImages3/*.jpg"))
 images = []
 
 
@@ -38,7 +41,7 @@ error, stitched_img = imageStitcher.stitch(images)
 
 if not error:
 
-    cv2.imwrite("stitchedOutput.png", stitched_img)
+    cv2.imwrite(str(ROOT / "stitchedOutput.png"), stitched_img)
     cv2.imshow("Stitched Image", stitched_img)
     cv2.waitKey(0)
 
@@ -139,5 +142,5 @@ h_large = int(h_small / scale_percent)
 # 7. Crop the ORIGINAL high-res image
 stitched_img_processed = stitched_img[y_large:y_large + h_large, x_large:x_large + w_large]
 
-cv2.imwrite("StitchedOutputProcessed.png", stitched_img_processed)
+cv2.imwrite(str(ROOT / "StitchedOutputProcessed.png"), stitched_img_processed)
 

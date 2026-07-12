@@ -15,7 +15,7 @@ from typing import Literal
 import cv2
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 TEMP_DIR = ROOT / "tempImages"
 DATA_DIR = ROOT / "data" / "lots"
 PREVIEW_DIR = ROOT / "data" / "previews"

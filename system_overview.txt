@@ -1,9 +1,19 @@
-What Was Done:
+Completed:
 - Calculated accuracy/error between bounding box centres and node coordinates
-- Looped through the bounding box centres and node coordinate dict (pixel values) and found centres OF VACANT SPOTS ONLY ("if classID = 0:") that "match" (closest) pixel node coordinates
-- Passed those matched nodes into the "vacant_spot_set" (graph_maker.py) and ran the pathfinding algorithm (WORKED!)
+- Looped through bbox centres and node coordinate dict (pixel values); matched VACANT spots only (class_id = 0) to closest graph nodes
+- Passed matched nodes into vacant_spot_set (graph_maker.py) and ran Dijkstra pathfinding (WORKED!)
+- Drew shortest-path nodes (circles) and edges (lines) directly onto the inference image in complete_parking_spot_detection_system.py -> path_overlay.png
+- Trained YOLO on moc_parking_lot_datatset (vacant / occupied); best weights at runs/detect/train-10/weights/best.pt
+- Moved .py scripts into scripts/ (calibration, detection, pathfinding, stitching, server)
 
-To Do (in "complete_parking_spot_detection_system.py" file):
-- Draw the nodes (circles?) and edges (straight lines?) of the calculated shortest path DIRECTLY onto the image (suppose you start at BL)
+In Progress:
+- Tuning bbox-centre -> node matching tolerance and real-world -> pixel scale (accuracy, X_PAD, Y_PAD in complete_parking_spot_detection_system.py)
+- Homography / top-down warp still needs pts_dst tuning (scripts/stitching/rectify_and_stitch.py + calibration pickers)
+- Two parallel tracks: YOLO + Dijkstra pipeline vs heuristic parking_classifier.py + web map (web/, data/lots/) — not merged yet
 
--> When ALL above tasks are finalized, use the image stitcher scripts to get a stitched image and pass that to the model to run inferences
+To Do:
+- Stitch images first (scripts/stitching/image_stitching_panorama.py), then run YOLO inference on the stitched panorama instead of a single test frame
+- Single end-to-end script: stitch -> detect -> map vacant spots to nodes -> update lot JSON -> web UI
+- Replace heuristic grid + status_overrides in parking_classifier.py with YOLO output
+- Connect graph_maker.py / Dijkstra to data/lots/*.json (web/app.js already has A* for demo lots)
+- FastAPI backend + React client (optional: RTSP camera ingest)

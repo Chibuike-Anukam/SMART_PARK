@@ -1,9 +1,10 @@
-# Config File:
-train: C:\Projects\SMART_PARK\moc_parking_lot_datatset\train
-val: C:\Projects\SMART_PARK\moc_parking_lot_datatset\val
-test: C:\Projects\SMART_PARK\moc_parking_lot_datatset\test
+# Dataset root (relative paths work from any machine)
+path: moc_parking_lot_datatset
+train: train/images
+val: val/images
+test: test/images
 
 nc: 2
-names: ['vacant', 'occupied'] 
+names: ['vacant', 'occupied']
 
-# 0 = 'vacant', 1 = 'occupied'
+# 0 = vacant, 1 = occupied
