@@ -19,7 +19,7 @@ from rectify_and_stitch import*
 
 
 def get_box_centers(yolo_file_path, image_width, image_height):
-    centers = []
+    centers: list[dict] = []
 
     # 1. Open and read the text file line by line
     with open(yolo_file_path, 'r') as file:
@@ -53,8 +53,8 @@ def get_box_centers(yolo_file_path, image_width, image_height):
     return centers
 
 # set image size to size of stitched image
-IMG_W = OUTPUT_W
-IMG_H = OUTPUT_H
+IMG_W: int = OUTPUT_W
+IMG_H: int = OUTPUT_H
 
 # file_path = 'C:/Projects/SMART_PARK/runs/detect/predict-3/labels/20260622_123826.txt'
 file_path = current_dir / "runs/detect/predict-3/labels/20260622_123826.txt"
@@ -69,9 +69,9 @@ detected_centers = get_box_centers(file_path, IMG_W, IMG_H)
 from graph_maker import*
 import math
 
-SCALE = 10
-X_PAD = 30
-Y_PAD = 15
+SCALE: int = 10
+X_PAD: int = 30
+Y_PAD: int = 15
 
 def node_to_px(node_dict, node_name):
     x_cm, y_cm = node_dict[node_name]
@@ -82,13 +82,13 @@ def node_to_px(node_dict, node_name):
 # px_list = {}
 
 # Converting node_coordinates dict to pixel values and saving them to a new dict (node_coordinates_px)
-node_coordinates_px = {}
+node_coordinates_px: dict[list[tuple]] = {}
 
 for key in node_coordinates:
     if key in node_coordinates_px:
         node_coordinates_px[key].append(node_to_px(node_coordinates, key))
     else:
-        node_coordinates_px[key] = [node_to_px(node_coordinates, key)]
+        node_coordinates_px[key] = node_to_px(node_coordinates, key)
 
 print()
 print("node_coordinates:", node_coordinates)
@@ -97,13 +97,13 @@ print("node_coordinates_px:", node_coordinates_px)
 
 
 #### Part 4: Find the node in the node coordinate dict corresponding to the one from the image
-cor_nodes = []
-accuracy = 5
+cor_nodes: list[str] = []
+accuracy: int = 5
 
 for obj in detected_centers: # detected_centers is a list of dicts, so obj is a dict!
     if obj['class_id'] == 0:
         for node, coord in node_coordinates_px.items():
-            if abs(coord[0][0] - obj['center'][0]) <= accuracy and abs(coord[0][1] - obj['center'][1]) <= accuracy:
+            if abs(coord[0] - obj['center'][0]) <= accuracy and abs(coord[1] - obj['center'][1]) <= accuracy:
                 cor_nodes.append(node)
 
 print()
@@ -112,10 +112,11 @@ print("cor_nodes:", cor_nodes)
 
 #### Part 5: Run path finding algorithm
 
-# --- SIMULATION ---
+# --- SIMULATION --- #
+
 # A vacant spot detection algorithm flags these spots as open
 # vacant_spot_set = {'P1', 'P4', 'P9', 'P12'}
-vacant_spot_set = set(cor_nodes)
+vacant_spot_set: set[str] = set(cor_nodes)
 
 best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'BL', vacant_spot_set)
 
@@ -125,27 +126,29 @@ print(f"Total Distance: {total_meters:.2f} centimeters")
 print(f"Chosen Spot: {chosen_spot}")
 
 #### Part 6: Draw nodes and edges on the image
-import cv2
+import cv2, random
 
 # img = cv2.imread('stitched_topdown.png')
 img = cv2.imread('runs/detect/predict/20260622_123826.jpg')
 
-node_coordinates_2 = {}
+node_coordinates_2: dict[list[tuple]] = {}
 for node, val in node_coordinates.items():
     temp = []
     temp.append((int(val[0]), int(val[1])))
     node_coordinates_2[node] = temp
 
-for i in range(len(cor_nodes) - 1):
-    node1 = node_coordinates_px[cor_nodes[i]][0]
-    node2 = node_coordinates_px[cor_nodes[i + 1]][0]
+# BUG: Nodes and Edges drawing at the top left and too small
+node_coordinates_px = {'BL' : (560, 3377), 'P5E' : (1669, 3357), 'P6E' : (2712, 3338), 'P6': (2686, 2418)}
+
+for i in range(len(best_path) - 1):
+    node1 = node_coordinates_px[best_path[i]]
+    node2 = node_coordinates_px[best_path[i + 1]]
     cv2.line(img, node1, node2, (0, 0, 255), 5) # Color = (Blue, Green, Red) or BGR
 
-for node in cor_nodes:
-    point = node_coordinates_px[cor_nodes[i]][0]
-    cv2.circle(img, point, 8, (255, 255, 255), -1)
-    cv2.putText(img, node, (point[0] + 10, point[1]),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 5)
+for node in best_path:
+    point = node_coordinates_px[node]
+    cv2.circle(img, (point[0], point[1]), 32, (255, 255, 255), -1)
+    cv2.putText(img, node, (point[0] + 32, point[1] + 50), cv2.FONT_HERSHEY_SIMPLEX, 5, (255,255,255), 5)
 
 cv2.imwrite('path_overlay.png', img)
 cv2.waitKey(0)
