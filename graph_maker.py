@@ -2,7 +2,7 @@ import heapq
 
 
 # 1. Store the real-world coordinates (X, Y in meters) of each pylon/spot
-# This is crucial for the A* heuristic (estimating distance to the goal) 
+# This is crucial for the A* heuristic (estimating distance to the goal)
 node_coordinates = {
     'BL': (0.0, 0.0),
     'TL':  (0.0, 15.5),
@@ -27,13 +27,13 @@ node_coordinates = {
 }
 
 # 2. Store the Adjacency Dictionary (The map of valid paths and their weights)
-# Only connect pylons that have a straight, drivable lane between them! 
+# Only connect pylons that have a straight, drivable lane between them!
 parking_lot_graph = {
     'BL': {'TL': 15.5, 'P5E': 5.625},
     'TL':  {'BL': 15.5, 'P1E': 5.625},
     'TR':  {'P4E': 5.625, 'BR': 15.5},
     'BR':  {'TR': 15.5, 'P8E': 5.625},
-    'P1E': {'TL': 5.625, 'P1': 4.625, 'P2E': 5.25},  
+    'P1E': {'TL': 5.625, 'P1': 4.625, 'P2E': 5.25},
     'P2E': {'P1E': 5.25, 'P2': 4.625, 'P3E': 5.25},
     'P3E': {'P2E': 5.25, 'P3': 4.625, 'P4E': 5.25},
     'P4E': {'P3E': 5.25, 'P4': 4.625, 'TR': 5.625},
@@ -76,13 +76,12 @@ def dijkstra(graph, start, goal):
 
     return None, float("inf")
 
-# --- SIMULATION ---
+# --- SIMULATION (used in complete_parking_spot_detection_system.py) ---
 # A vacant spot detection algorithm flags Spot_42 as open
-vacant_spot_set = {'P1', 'P4', 'P9', 'P12'}
+# vacant_spot_set = {'P1', 'P4', 'P9', 'P12'}
 
-best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'P8E', vacant_spot_set)
+# best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'P8E', vacant_spot_set)
 
-print(f"Navigation Path: {' -> '.join(best_path)}")
-print(f"Total Distance: {total_meters:.2f} centimeters")
-print(f"Chosen Spot: {chosen_spot}")
-
+# print(f"Navigation Path: {' -> '.join(best_path)}")
+# print(f"Total Distance: {total_meters:.2f} centimeters")
+# print(f"Chosen Spot: {chosen_spot}")

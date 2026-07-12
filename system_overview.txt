@@ -1,10 +1,9 @@
-What Was Done: 
+What Was Done:
 - Calculated accuracy/error between bounding box centres and node coordinates
 - Looped through the bounding box centres and node coordinate dict (pixel values) and found centres OF VACANT SPOTS ONLY ("if classID = 0:") that "match" (closest) pixel node coordinates
 - Passed those matched nodes into the "vacant_spot_set" (graph_maker.py) and ran the pathfinding algorithm (WORKED!)
 
-To Do (in "complete_parking_spot_detection_system.py" file): 
+To Do (in "complete_parking_spot_detection_system.py" file):
 - Draw the nodes (circles?) and edges (straight lines?) of the calculated shortest path DIRECTLY onto the image (suppose you start at BL)
 
 -> When ALL above tasks are finalized, use the image stitcher scripts to get a stitched image and pass that to the model to run inferences
-

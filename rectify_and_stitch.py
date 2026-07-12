@@ -29,8 +29,8 @@ OUTPUT_H = 180   # height of final stitched image in pixels --- CHANGE BASED ON 
 # Where each marker should land in the output (top-down view)
 # Adjust these to match the real layout of your markers on the surface
 pts_dst = np.float32([
-    [165,  30],   # marker 1 - 16.5 right, 3cm down     
-    [112.5,  92.5],   # marker 2 - 11.25cm right, 9.25cm down   
+    [165,  30],   # marker 1 - 16.5 right, 3cm down
+    [112.5,  92.5],   # marker 2 - 11.25cm right, 9.25cm down
     [165,  92.5],   # marker 3 - 16.5cm right, 9.25cm down
     [217.5,  92.5],   # marker 4 - 21.75cm right, 9.25cm down
     [165,  155],   # marker 5 - 16.5cm right, 15.5cm down
@@ -42,7 +42,7 @@ pts_dst = np.float32([
 H1, _ = cv2.findHomography(pts1, pts_dst, cv2.RANSAC)
 H2, _ = cv2.findHomography(pts2, pts_dst, cv2.RANSAC)
 
-# ── 5. WARP BOTH IMAGES INTO TOP-DOWN VIEW ─────────────────────────  
+# ── 5. WARP BOTH IMAGES INTO TOP-DOWN VIEW ─────────────────────────
 warped1 = cv2.warpPerspective(img1, H1, (OUTPUT_W, OUTPUT_H))
 warped2 = cv2.warpPerspective(img2, H2, (OUTPUT_W, OUTPUT_H))
 
@@ -81,4 +81,4 @@ cv2.imshow('Final stitched', cv2.resize(result, (800, 500)))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-print("Saved to stitched_topdown.png")
+# print("Saved to stitched_topdown.png")
