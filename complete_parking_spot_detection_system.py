@@ -126,24 +126,36 @@ print(f"Total Distance: {total_meters:.2f} centimeters")
 print(f"Chosen Spot: {chosen_spot}")
 
 #### Part 6: Draw nodes and edges on the image
-import cv2, random
+import cv2
 
 # img = cv2.imread('stitched_topdown.png')
 img = cv2.imread('runs/detect/predict/20260622_123826.jpg')
 
-node_coordinates_2: dict[list[tuple]] = {}
-for node, val in node_coordinates.items():
-    temp = []
-    temp.append((int(val[0]), int(val[1])))
-    node_coordinates_2[node] = temp
+img_height, img_width = img.shape[:2]
+print(img_width, img_height)
 
-# BUG: Nodes and Edges drawing at the top left and too small
-node_coordinates_px = {'BL' : (560, 3377), 'P5E' : (1669, 3357), 'P6E' : (2712, 3338), 'P6': (2686, 2418)}
+bl_px = (560, 3377)
+def node_to_px(node_dict, node_name):
+    x_cm, y_cm = node_dict[node_name]
+    return (int(bl_px[0] + (x_cm * 500 / 2.51)), int(bl_px[1] - (y_cm * 500 / 2.51)))
+
+node_coordinates_px: dict[list[tuple]] = {}
+
+for key in node_coordinates:
+    if key in node_coordinates_px:
+        node_coordinates_px[key].append(node_to_px(node_coordinates, key))
+    else:
+        node_coordinates_px[key] = node_to_px(node_coordinates, key)
+
+# node_coordinates_px = {'BL' : (560, 3377), 'P5E' : (1669, 3357), 'P6E' : (2712, 3338), 'P6': (2686, 2418)}
+
+print()
+print("node_coordinates_px:", node_coordinates_px)
 
 for i in range(len(best_path) - 1):
     node1 = node_coordinates_px[best_path[i]]
     node2 = node_coordinates_px[best_path[i + 1]]
-    cv2.line(img, node1, node2, (0, 0, 255), 5) # Color = (Blue, Green, Red) or BGR
+    cv2.line(img, node1, node2, (0, 0, 255), 10) # Color = (Blue, Green, Red) or BGR
 
 for node in best_path:
     point = node_coordinates_px[node]
