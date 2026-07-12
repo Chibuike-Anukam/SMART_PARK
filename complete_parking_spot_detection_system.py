@@ -118,7 +118,7 @@ print("cor_nodes:", cor_nodes)
 # vacant_spot_set = {'P1', 'P4', 'P9', 'P12'}
 vacant_spot_set: set[str] = set(cor_nodes)
 
-best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'BL', vacant_spot_set)
+best_path, total_meters, chosen_spot = dijkstra(parking_lot_graph, 'TR', vacant_spot_set)
 
 print()
 print(f"Navigation Path: {' -> '.join(best_path)}")
